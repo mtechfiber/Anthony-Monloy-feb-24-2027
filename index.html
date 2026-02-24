@@ -324,18 +324,49 @@ function closeAll() {
   document.getElementById("contactModal").style.display = "none";
 }
 
-function copyQRNumber(button) {
-  const number = document.getElementById("payNumber").innerText.replace(/-/g, '');
-  navigator.clipboard.writeText(number);
-  button.innerText = "✓ COPIED";
-  setTimeout(() => button.innerText = "COPY NUMBER", 1500);
-}
-
-function copyContactNumber(button) {
-  navigator.clipboard.writeText("09561266378");
-  button.innerText = "✓ COPIED";
-  setTimeout(() => button.innerText = "📋 Copy Number", 1500);
-}
+function fallbackCopy(text) {	
+const textarea = document.createElement("textarea");	
+textarea.value = text;	
+textarea.style.position = "fixed";	
+textarea.style.opacity = "0";	
+document.body.appendChild(textarea);	
+textarea.focus();	
+textarea.select();	
+	
+try {	
+document.execCommand("copy");	
+} catch (err) {	
+alert("Copy failed. Please copy manually.");	
+}	
+	
+document.body.removeChild(textarea);	
+}	
+	
+function copyQRNumber(button) {	
+const number = document.getElementById("payNumber").innerText.replace(/-/g, '');	
+	
+if (navigator.clipboard && window.isSecureContext) {	
+navigator.clipboard.writeText(number);	
+} else {	
+fallbackCopy(number);	
+}	
+	
+button.innerText = "✓ COPIED";	
+setTimeout(() => button.innerText = "COPY NUMBER", 1500);	
+}	
+	
+function copyContactNumber(button) {	
+const number = "09561266378";	
+	
+if (navigator.clipboard && window.isSecureContext) {	
+navigator.clipboard.writeText(number);	
+} else {	
+fallbackCopy(number);	
+}	
+	
+button.innerText = "✓ COPIED";	
+setTimeout(() => button.innerText = "📋 Copy Number", 1500);	
+}	
 </script>
 
 </body>
